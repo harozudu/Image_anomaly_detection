@@ -3,7 +3,6 @@
 @author: HZU
 """
 import streamlit as st
-import tensorflow as tf
 import plotly.graph_objects as go
 import numpy as np
 from PIL import Image
@@ -12,8 +11,9 @@ import joblib
 from utils.plot_functions import plot_image_input_FFT, plot_image_input, \
     plot_predict_histo, plot_same_label_img, plot_FFT
 from fft_2 import preprocess_input, fft_detector
-import torch
-import torchvision.transforms as tt
+#import tensorflow as tf
+#import torch
+#import torchvision.transforms as tt
 
 st.set_page_config(layout="wide")
 
@@ -109,37 +109,37 @@ with st.expander('FFT method'):
             st.plotly_chart(figure_or_data=fig, use_container_width=True)
 
 
-@st.cache
-def load_discriminator():
-    return torch.load(
-        "model/discriminator.pt",
-        map_location=torch.device('cpu')
-    )
+#@st.cache
+#def load_discriminator():
+#    return torch.load(
+#        "model/discriminator.pt",
+#        map_location=torch.device('cpu')
+#    )
 
 
-with st.expander('DCGAN Anomaly detection'):
-    st.title("Deep Convolutional Generative Adversial Network")
-    st.write("Use a DCGAN "
-             "trained on clean Dice to detect defective dice.")
-    stats = (0.5, 0.5, 0.5), (0.5, 0.5, 0.5)
-    tt_transform = tt.Compose([tt.Resize(128),
-                               tt.CenterCrop(128),
-                               tt.ToTensor(),
-                               tt.Normalize(*stats)])
-    disc = load_discriminator()
-    if image_file:
-        threshold = st.slider(
-            "Threshold",
-            min_value=0.0,
-            max_value=1.0,
-            value=0.1,
-            step=0.05
-        )
-        gan_img = pil_img.convert('RGB')
-        img_tensor = tt_transform(gan_img).unsqueeze_(0)
-        score = disc(img_tensor)[0].item()
-        score = round(score, 2)
-        predict = "Normal" if score >= threshold else "Defective"
-        st.write(f"Prediction: {predict}")
-        st.write(f"Score: {score}")
+#with st.expander('DCGAN Anomaly detection'):
+#    st.title("Deep Convolutional Generative Adversial Network")
+#    st.write("Use a DCGAN "
+#             "trained on clean Dice to detect defective dice.")
+#    stats = (0.5, 0.5, 0.5), (0.5, 0.5, 0.5)
+#    tt_transform = tt.Compose([tt.Resize(128),
+#                               tt.CenterCrop(128),
+#                               tt.ToTensor(),
+#                               tt.Normalize(*stats)])
+#    disc = load_discriminator()
+#    if image_file:
+#        threshold = st.slider(
+#            "Threshold",
+#            min_value=0.0,
+#            max_value=1.0,
+#            value=0.1,
+#            step=0.05
+#        )
+#        gan_img = pil_img.convert('RGB')
+#        img_tensor = tt_transform(gan_img).unsqueeze_(0)
+#        score = disc(img_tensor)[0].item()
+#        score = round(score, 2)
+#        predict = "Normal" if score >= threshold else "Defective"
+#        st.write(f"Prediction: {predict}")
+#        st.write(f"Score: {score}")
 
